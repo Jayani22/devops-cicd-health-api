@@ -54,9 +54,8 @@ jobs:
           echo "Dockerfile found."
 
       - name: Build Docker Image
-        run: docker build \
-          --pull\
-          -t ${{ env.IMAGE_NAME }}.latest .
+        run: |
+          docker build --pull -t ${{ env.IMAGE_NAME }}:latest .
 
       - name: Verify Docker Image
         run: docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
@@ -68,6 +67,9 @@ jobs:
       - name: Run Docker Container
         run: |
           docker run -d --name health-api-test -p 3000:3000 ${{ env.IMAGE_NAME }}:latest
+
+          echo "Running containers:"
+          docker ps
 
       - name: Wait for Application to Start
         run: |
@@ -85,7 +87,13 @@ jobs:
       - name: Stop Test Container
         if: always()
         run: |
+          echo "======= Container Logs ======="
+          docker logs health-api-test || true
+
+          echo "======= Stopping Container ========"
           docker stop health-api-test || true
+
+          echo "======== Removing Container ========what"
           docker rm health-api-test || true
 
       - name: Login to Docker Hub
@@ -96,11 +104,9 @@ jobs:
 
       - name: Tag Docker Images
         run: |
-          docker tag ${{ env.IMAGE_NAME }}:latest \
-          ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          docker tag ${{ env.IMAGE_NAME }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-          docker tag ${{ env.IMAGE_NAME }}:latest \
-          ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          docker tag ${{ env.IMAGE_NAME }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Push Docker Images
         run: |

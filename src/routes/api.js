@@ -4,17 +4,20 @@ const getSystemInfo = require("../utils/systemInfo");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-    res.json({
+    res.status(200).json({
         application: "DevOps CI/CD Health API",
         version: "1.0.0",
-        status: "Running"
+        status: "Running",
+        environment: process.env.NODE_ENV || "development"
     });
 });
 
 router.get("/health", (req, res) => {
-    res.json({
+    res.status(200).json({
         status: "Healthy",
-        message: "Application is running successfully"
+        service: "DevOps CI/CD Health API",
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
     });
 });
 
