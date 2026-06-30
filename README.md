@@ -1,6 +1,6 @@
 # DevOps CI/CD Health API
 
-> A production-inspired Node.js Health Monitoring API demonstrating an end-to-end CI/CD pipeline using GitHub Actions, Docker, automated testing, and Docker Hub deployment.
+A production-inspired Node.js Health Monitoring API demonstrating an end-to-end CI/CD pipeline using GitHub Actions, Docker, automated testing, and Docker Hub deployment.
 
 ---
 
